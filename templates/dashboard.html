@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduPlanner AI - Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-900 text-gray-100 font-sans min-h-screen">
+
+    <nav class="bg-gray-800 border-b border-gray-700 p-4 shadow-lg">
+        <div class="max-w-5xl mx-auto flex justify-between items-center">
+            <h1 class="text-2xl font-bold text-indigo-400 tracking-wide">🚀 EduPlanner AI</h1>
+            <span class="text-sm bg-gray-700 px-4 py-2 rounded-lg text-gray-300">⚡ Free AI Version</span>
+        </div>
+    </nav>
+
+    <main class="max-w-5xl mx-auto p-6 mt-8 grid grid-cols-1 lg:grid-cols-3 gap-8">
+        
+        <div class="lg:col-span-1 space-y-6">
+            <div class="bg-gray-800 p-5 rounded-xl border border-gray-700 shadow-xl">
+                <h3 class="text-md font-semibold text-gray-200 mb-3">📌 Quick Task Add</h3>
+                <form action="/dashboard" method="POST" class="space-y-3">
+                    <input type="text" name="task_name" placeholder="Task Name" required
+                        class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white placeholder-gray-400 focus:outline-none focus:border-indigo-500 text-sm">
+                    <select name="priority" required
+                        class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-indigo-500 text-sm">
+                        <option value="" disabled selected>Priority</option>
+                        <option value="High 🔥">High 🔥</option>
+                        <option value="Medium ⚡">Medium ⚡</option>
+                        <option value="Low 💤">Low 💤</option>
+                    </select>
+                    <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-500 py-2 rounded-lg font-medium transition text-sm">Add</button>
+                </form>
+            </div>
+
+            <div class="bg-gray-800 rounded-xl border border-gray-700 shadow-xl overflow-hidden">
+                <div class="p-3 bg-gray-750 border-b border-gray-700 font-semibold text-sm text-gray-300">📋 Task Backlog</div>
+                <ul class="divide-y divide-gray-700">
+                    {% for task in tasks %}
+                        <li class="p-3 flex justify-between items-center text-sm">
+                            <span class="truncate max-w-[120px]">{{ task.name }}</span>
+                            <div class="flex items-center space-x-2">
+                                <span class="text-xs bg-gray-700 px-2 py-0.5 rounded text-indigo-300">{{ task.priority }}</span>
+                                <a href="/delete/{{ task.id }}" class="hover:text-red-400 text-xs">🗑️</a>
+                            </div>
+                        </li>
+                    {% else %}
+                        <li class="p-4 text-center text-xs text-gray-500">No tasks added!</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+
+        <div class="lg:col-span-2 space-y-6">
+            <div class="bg-gradient-to-r from-indigo-900 to-purple-900 p-6 rounded-xl border border-indigo-500/30 shadow-xl">
+                <h3 class="text-lg font-bold text-white mb-2">🤖 AI Study Plan Generator</h3>
+                <p class="text-xs text-indigo-200 mb-4">Apna topic aur target days daaliye, AI aapko pura plan bana kar dega.</p>
+                
+                <form action="/generate_ai_plan" method="POST" class="flex flex-col sm:flex-row gap-3">
+                    <input type="text" name="subject" placeholder="E.g., Object Oriented Programming in C++" required
+                        class="flex-1 bg-gray-800/80 border border-indigo-500/30 rounded-lg px-4 py-2 text-white placeholder-gray-400 focus:outline-none focus:border-purple-500 text-sm">
+                    <input type="number" name="days" placeholder="Days (e.g. 7)" min="1" required
+                        class="w-full sm:w-24 bg-gray-800/80 border border-indigo-500/30 rounded-lg px-4 py-2 text-white placeholder-gray-400 focus:outline-none focus:border-purple-500 text-sm">
+                    <button type="submit" class="bg-purple-600 hover:bg-purple-500 px-5 py-2 rounded-lg font-semibold transition text-sm shadow-lg shadow-purple-600/20">
+                        Generate ✨
+                    </button>
+                </form>
+            </div>
+
+            <div class="bg-gray-800 p-6 rounded-xl border border-gray-700 shadow-xl min-h-[250px]">
+                <h3 class="text-md font-semibold text-purple-400 mb-4 flex items-center gap-2">
+                    ✨ Current AI Study Strategy 
+                    {% if plan %}<span class="text-xs bg-purple-900/50 text-purple-300 px-2 py-0.5 rounded border border-purple-500/20">{{ plan.subject }} ({{ plan.days }} Days)</span>{% endif %}
+                </h3>
+                
+                <div class="text-gray-300 text-sm leading-relaxed whitespace-pre-line bg-gray-900/50 p-4 rounded-lg border border-gray-700/50 max-h-[400px] overflow-y-auto">
+                    {% if plan %}
+                        {{ plan.plan_text }}
+                    {% else %}
+                        <div class="text-center py-8 text-gray-500">
+                            <p class="text-2xl mb-2">🧠</p>
+                            <p>Abhi tak koi AI plan generate nahi kiya gaya hai. Upar form bhariye aur magic dekhiye!</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+</body>
+</html>
